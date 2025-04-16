@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Cat Match - Magical Puzzle Adventure</title>
+    <link rel='icon' href='/src/icons/logo.png' type='image/x-icon'>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Color Variables */
+        :root {
+            --dark-green: #033d00;
+            --purple: #8e3a89;
+            --light-pink: #fdf5fc;
+            --white: #ffffff;
+        }
+
+        /* Global Styles */
+        body {
+            background-color: var(--light-pink);
+            color: var(--dark-green);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: var(--purple);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--purple);
+            border-radius: 10px;
+        }
+
+        h3 {
+            font-size: 2.2rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--dark-green);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--purple);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(142, 58, 137, 0.4);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(142, 58, 137, 0.5);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+
+        .btn:hover::before {
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                left: -50%;
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                left: 150%;
+                opacity: 0;
+            }
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--purple);
+            border: 2px solid var(--purple);
+        }
+
+        /* Header */
+        header {
+            background-color: var(--white);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+            border: 2px solid var(--purple);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--purple);
+            margin: 0;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark-green);
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--purple);
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+
+        nav ul li a:hover {
+            color: var(--purple);
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--purple);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: url('/src/img/first.png') no-repeat center center / cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(3, 61, 0, 0.8), rgba(142, 58, 137, 0.8));
+            opacity: 0.6;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            color: var(--white);
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: var(--white);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            color: var(--white);
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, var(--light-pink));
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--purple);
+        }
+
+        .floating-paws {
+            position: absolute;
+            width: 60px;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .paw1 {
+            top: 10%;
+            right: 20%;
+            animation-delay: 0s;
+        }
+
+        .paw2 {
+            top: 20%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .paw3 {
+            bottom: 10%;
+            right: 30%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            color: var(--purple);
+            font-size: 1.5rem;
+            margin-right: 15px;
+            min-width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-pink);
+            border-radius: 50%;
+            padding: 20px;
+        }
+
+        .feature-text h4 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: var(--purple);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .stars {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        .star {
+            color: #FFD700;
+            font-size: 1.5rem;
+            margin-right: 5px;
+        }
+
+        .downloads {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-pink);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .downloads-icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            color: var(--purple);
+        }
+
+        .downloads-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background-color: var(--light-pink);
+            position: relative;
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--white);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--purple);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--purple), var(--dark-green));
+        }
+
+        .feature-card img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--dark-green);
+        }
+
+        /* Gallery Section */
+        .gallery {
+            padding: 100px 0;
+            background-color: var(--white);
+            position: relative;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border: 3px solid var(--light-pink);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            padding: 20px;
+            color: var(--white);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--white);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 0;
+            background-color: var(--light-pink);
+            position: relative;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 6rem;
+            color: var(--light-pink);
+            font-family: Georgia, serif;
+            opacity: 0.5;
+        }
+
+        .testimonial-text {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid var(--purple);
+        }
+
+        .author-info h4 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--purple);
+        }
+
+        .author-info p {
+            font-size: 1rem;
+            color: var(--dark-green);
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .testimonial-rating {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .testimonial-rating .star {
+            font-size: 1.2rem;
+        }
+
+        /* Download Section */
+        .download {
+            padding: 100px 0;
+            background: url('/src/img/first.png') center center / cover no-repeat;
+            position: relative;
+            color: var(--white);
+        }
+
+        .download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(3, 61, 0, 0.9), rgba(142, 58, 137, 0.9));
+        }
+
+        .download-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .download h2 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 30px;
+        }
+
+        .download h2::after {
+            background: var(--white);
+        }
+
+        .download p {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 40px;
+        }
+
+        .platforms {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .platform-btn {
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+            color: var(--dark-green);
+            padding: 15px 30px;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .platform-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .platform-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .platform-text span {
+            display: block;
+        }
+
+        .platform-text .small {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .platform-text .large {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Magic Effects */
+        .magic-sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: white;
+            filter: blur(1px);
+            animation: sparkle 4s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-green);
+            color: var(--white);
+            padding: 60px 0 30px;
+            position: relative;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid var(--purple);
+        }
+
+        .footer-logo h3 {
+            color: var(--white);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .footer-links h4 {
+            color: var(--white);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--light-pink);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+
+        .footer-about p {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom p {
+            margin-top: 40px;
+            padding-top: 20px;
+
+            text-align: center;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .about-container {
+                flex-direction: column;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                position: relative;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+                transition: clip-path 0.3s ease;
+            }
+
+            nav.active {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .platforms {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+
+
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Color Variables */
+        :root {
+            --dark-green: #033d00;
+            --purple: #8e3a89;
+            --light-pink: #fdf5fc;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--light-pink);
+            color: var(--dark-green);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: var(--purple);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--purple);
+            border-radius: 10px;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: var(--dark-green);
+        }
+
+        ul,
+        ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: var(--dark-green);
+        }
+
+        a {
+            color: var(--purple);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--dark-green);
+            text-decoration: underline;
+        }
+
+        /* Cookie Policy Specific Styles */
+        .cookie-hero {
+            background: linear-gradient(45deg, rgba(3, 61, 0, 0.8), rgba(142, 58, 137, 0.8)), url('/api/placeholder/1400/300');
+            background-size: cover;
+            background-position: center;
+            padding: 120px 0 80px;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .cookie-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--light-pink));
+        }
+
+        .cookie-hero h1 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .cookie-hero p {
+            color: var(--white);
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .cookie-content {
+            background-color: var(--white);
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cookie-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, var(--purple), var(--dark-green));
+        }
+
+        .cookie-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed rgba(142, 58, 137, 0.2);
+        }
+
+        .cookie-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .cookie-icon {
+            color: var(--purple);
+            font-size: 2rem;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        .highlight-box {
+            background-color: var(--light-pink);
+            border-left: 5px solid var(--purple);
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            margin: 30px 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0;
+        }
+
+        /* Table styling */
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .cookie-table th {
+            background-color: var(--purple);
+            color: var(--white);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .cookie-table tr:nth-child(even) {
+            background-color: var(--light-pink);
+        }
+
+        .cookie-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(142, 58, 137, 0.1);
+        }
+
+        .cookie-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Cookie category boxes */
+        .cookie-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .cookie-category {
+            background-color: var(--light-pink);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .cookie-category:hover {
+            transform: translateY(-5px);
+            border-color: var(--purple);
+        }
+
+        .cookie-category h3 {
+            font-size: 1.4rem;
+            color: var(--purple);
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cookie-category-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--purple);
+            color: var(--white);
+            border-radius: 50%;
+            font-size: 1rem;
+        }
+
+        /* List styling */
+        .cookie-list {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .cookie-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .cookie-list li::before {
+            content: '🐾';
+            position: absolute;
+            left: 0;
+            color: var(--purple);
+        }
+
+        /* Magic Effects */
+        .magic-sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: white;
+            filter: blur(1px);
+            animation: sparkle 4s linear infinite;
+        }
+
+        @keyframes sparkle {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* Button styles */
+        .cookie-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: var(--purple);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(142, 58, 137, 0.4);
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .cookie-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(142, 58, 137, 0.5);
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .cookie-content {
+                padding: 40px;
+            }
+
+            .cookie-categories {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cookie-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cookie-content {
+                padding: 30px;
+            }
+
+            .cookie-categories {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            .cookie-hero {
+                padding: 100px 0 60px;
+            }
+
+            .cookie-content {
+                padding: 20px;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <img src="/src/icons/logo.png" alt="Magic Cat Match Logo">
+                <h1>Magic Cat Match</h1>
+            </a>
+            <button class="mobile-menu-btn">☰</button>
+            <nav>
+                <ul>
+                    <li><a href="/">About</a></li>
+                    <li><a href="/">Features</a></li>
+                    <li><a href="/">Gallery</a></li>
+                    <li><a href="/">Reviews</a></li>
+                    <li><a href="/">Download</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="cookie-hero">
+        <div class="container">
+            <h1>Cookie Policy</h1>
+            <p>Learn how Magic Cat Match uses cookies and similar technologies to enhance your gaming experience.</p>
+
+            <!-- Magic sparkles -->
+            <div class="magic-sparkle" style="top: 20%; left: 30%;"></div>
+            <div class="magic-sparkle" style="top: 40%; left: 70%;"></div>
+            <div class="magic-sparkle" style="top: 60%; left: 20%;"></div>
+            <div class="magic-sparkle" style="top: 30%; left: 80%;"></div>
+        </div>
+    </section>
+
+    <section class="cookie-content">
+        <div class="container">
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">🍪</span>What are Cookies?</h2>
+                <p>Cookies are small text files that are stored on your device (computer, tablet, or mobile phone) when you visit certain websites. They are widely used to make websites work more efficiently, provide a better user experience, and give website owners information about how their site is being used.</p>
+                <p>Cookies are not harmful and do not contain any information that directly identifies you as a person. They cannot be used to spread viruses or access your hard drive.</p>
+
+                <div class="highlight-box">
+                    <p>At Magic Cat Match, we use cookies to enhance your gaming experience, remember your preferences, and provide the services you request.</p>
+                </div>
+            </div>
+
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">🧩</span>Types of Cookies We Use</h2>
+                <p>We use different types of cookies for various reasons. Here are the main categories of cookies that Magic Cat Match uses:</p>
+
+                <div class="cookie-categories">
+                    <div class="cookie-category">
+                        <h3><span class="cookie-category-icon">1</span> Essential Cookies</h3>
+                        <p>These cookies are necessary for the website to function properly. They enable core functionality such as security, network management, and account access. You cannot opt out of these cookies.</p>
+                    </div>
+
+                    <div class="cookie-category">
+                        <h3><span class="cookie-category-icon">2</span> Preference Cookies</h3>
+                        <p>These cookies remember information that changes the way the website behaves or looks, like your preferred language or the region you are in.</p>
+                    </div>
+
+                    <div class="cookie-category">
+                        <h3><span class="cookie-category-icon">3</span> Analytics Cookies</h3>
+                        <p>These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously.</p>
+                    </div>
+
+                    <div class="cookie-category">
+                        <h3><span class="cookie-category-icon">4</span> Marketing Cookies</h3>
+                        <p>These cookies track your online activity to help advertisers deliver more relevant advertising or to limit how many times you see an ad.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">📋</span>Specific Cookies We Use</h2>
+                <p>Below is a detailed list of the cookies we use on our Magic Cat Match website:</p>
+
+                <table class="cookie-table">
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Type</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                    </tr>
+                    <tr>
+                        <td>session_id</td>
+                        <td>Essential</td>
+                        <td>Used to identify your unique session on the website</td>
+                        <td>Session</td>
+                    </tr>
+                    <tr>
+                        <td>auth_token</td>
+                        <td>Essential</td>
+                        <td>Used to maintain your authenticated session</td>
+                        <td>30 days</td>
+                    </tr>
+                    <tr>
+                        <td>game_progress</td>
+                        <td>Essential</td>
+                        <td>Stores your game progress and scores</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td>language_pref</td>
+                        <td>Preference</td>
+                        <td>Remembers your preferred language setting</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td>theme_choice</td>
+                        <td>Preference</td>
+                        <td>Stores your preferred visual theme if available</td>
+                        <td>1 year</td>
+                    </tr>
+                    <tr>
+                        <td>_ga</td>
+                        <td>Analytics</td>
+                        <td>Used by Google Analytics to distinguish users</td>
+                        <td>2 years</td>
+                    </tr>
+                    <tr>
+                        <td>_gid</td>
+                        <td>Analytics</td>
+                        <td>Used by Google Analytics to distinguish users</td>
+                        <td>24 hours</td>
+                    </tr>
+                    <tr>
+                        <td>_gat</td>
+                        <td>Analytics</td>
+                        <td>Used by Google Analytics to throttle request rate</td>
+                        <td>1 minute</td>
+                    </tr>
+                    <tr>
+                        <td>ads_prefs</td>
+                        <td>Marketing</td>
+                        <td>Stores advertising preferences</td>
+                        <td>90 days</td>
+                    </tr>
+                    <tr>
+                        <td>_fbp</td>
+                        <td>Marketing</td>
+                        <td>Used by Facebook to deliver advertisements</td>
+                        <td>90 days</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">🔍</span>How Google Uses Cookies</h2>
+                <p>Magic Cat Match uses Google Analytics and Google AdSense services, which use cookies. Here's how Google uses cookies in our context:</p>
+
+                <h3>Google Analytics</h3>
+                <p>Google Analytics is a web analytics service offered by Google that tracks and reports website traffic. Google uses the data collected to track and monitor the use of our website. This data is shared with other Google services. Google may use the collected data to contextualize and personalize the ads of its own advertising network.</p>
+
+                <p>You can opt-out of having your activity on the website made available to Google Analytics by installing the Google Analytics opt-out browser add-on. The add-on prevents the Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing information with Google Analytics about visits activity.</p>
+
+                <h3>Google AdSense</h3>
+                <p>Google AdSense is a program run by Google through which website publishers can serve automatic text, image, video, or interactive media advertisements that are targeted to site content and audience. These advertisements are administered, sorted, and maintained by Google.</p>
+
+                <p>Google uses DART cookies to serve ads to our users based on their visit to our site and other sites on the Internet. Users may opt-out of the use of the DART cookie by visiting the Google ad and content network privacy policy.</p>
+
+                <div class="highlight-box">
+                    <p>For more information about Google's privacy practices, please visit the <a href="https://policies.google.com/privacy" target="_blank">Google Privacy & Terms</a> web page.</p>
+                </div>
+            </div>
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">⚙️</span>Managing Your Cookie Preferences</h2>
+                <p>You have the right to decide whether to accept or reject cookies. You can exercise your cookie preferences in the following ways:</p>
+
+                <h3>Browser Settings</h3>
+                <p>Most web browsers allow you to manage your cookie preferences. You can set your browser to refuse cookies, or to alert you when cookies are being sent. The methods for doing so vary from browser to browser, and from version to version. You can find information about how to manage cookies in your browser at the browsers' respective websites:</p>
+
+                <ul class="cookie-list">
+                    <li><a href="https://support.google.com/chrome/answer/95647" target="_blank">Google Chrome</a></li>
+                    <li><a href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop" target="_blank">Mozilla Firefox</a></li>
+                    <li><a href="https://support.apple.com/guide/safari/manage-cookies-and-website-data-sfri11471/mac" target="_blank">Safari</a></li>
+                    <li><a href="https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank">Microsoft Edge</a></li>
+                    <li><a href="https://help.opera.com/en/latest/web-preferences/#cookies" target="_blank">Opera</a></li>
+                </ul>
+
+                <h3>Cookie Management Tool</h3>
+                <p>We offer a cookie management tool that allows you to customize your cookie preferences on our website. When you first visit our website, a cookie banner appears, allowing you to accept or reject certain types of cookies. You can change your preferences at any time by clicking the "Cookie Preferences" button at the bottom of our website.</p>
+
+                <a href="#" class="cookie-button">Manage Cookie Preferences</a>
+
+                <div class="highlight-box">
+                    <p>Please note that essential cookies cannot be rejected as they are strictly necessary to provide you with services that you have requested.</p>
+                </div>
+
+                <h3>Third-Party Opt-Out Tools</h3>
+                <p>You can opt out of targeted advertising by visiting:</p>
+                <ul class="cookie-list">
+                    <li><a href="http://www.aboutads.info/choices/" target="_blank">Digital Advertising Alliance</a></li>
+                    <li><a href="http://www.youronlinechoices.com/" target="_blank">Your Online Choices (EU)</a></li>
+                    <li><a href="https://optout.networkadvertising.org/" target="_blank">Network Advertising Initiative</a></li>
+                </ul>
+            </div>
+
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">❓</span>What Happens If You Disable Cookies</h2>
+                <p>If you disable cookies, some features of Magic Cat Match may not function properly. Here's what may happen:</p>
+
+                <ul class="cookie-list">
+                    <li>You may not be able to save your game progress between sessions</li>
+                    <li>Your preferences (like language settings) may not be remembered</li>
+                    <li>Some parts of the website may not work as expected</li>
+                    <li>You may need to log in every time you visit the website</li>
+                    <li>You may see less relevant advertisements (but you may still see ads)</li>
+                </ul>
+
+                <p>Disabling analytics and marketing cookies will not significantly affect your ability to use our website but will impact our ability to improve the website based on user behavior and may result in less relevant advertisements.</p>
+            </div>
+
+            <div class="cookie-section">
+                <h2><span class="cookie-icon">📝</span>Changes to Our Cookie Policy</h2>
+                <p>We may update our Cookie Policy from time to time. We will notify you of any changes by posting the new Cookie Policy on this page and updating the "Last Updated" date at the top of this policy.</p>
+                <p>You are advised to review this Cookie Policy periodically for any changes. Changes to this Cookie Policy are effective when they are posted on this page.</p>
+
+                <h3>Contact Us</h3>
+                <p>If you have any questions about our Cookie Policy, please contact us:</p>
+                <ul class="cookie-list">
+                    <li>By email: privacy@magic-cat-match-play.com</li>
+                    <li>Through the contact form on our website</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <p>Last Updated: March 17, 2025</p>
+                </div>
+            </div>
+
+            <!-- Magic sparkles -->
+            <div class="magic-sparkle" style="top: 20%; right: 10%;"></div>
+            <div class="magic-sparkle" style="bottom: 30%; left: 15%;"></div>
+            <div class="magic-sparkle" style="bottom: 20%; right: 20%;"></div>
+            <div class="magic-sparkle" style="top: 40%; left: 25%;"></div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <img src="/src/icons/logo.png" alt="Magic Cat Match Logo">
+                    <h3>Magic Cat Match</h3>
+                </div>
+                <p>A magical Match-3 puzzle adventure featuring Milo the cat and Oliver the dog. Join them in their quest to rescue their guardian from the enchanted toy world!</p>
+            </div>
+            <div class="footer-links">
+                <h4>Game Info</h4>
+                <ul>
+                    <li><a href="/">About</a></li>
+                    <li><a href="/">Features</a></li>
+                    <li><a href="/">Gallery</a></li>
+                    <li><a href="/">Reviews</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="/Policy356/">Privacy Policy</a></li>
+                    <li><a href="/Service347/">Terms of Use</a></li>
+                    <li><a href="/Cookie992/">Cookie Policy</a></li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Magic Cat Match. All Rights Reserved. Suitable for ages 3+.</p>
+        </div>
+    </footer>
+
+    <!-- Simple JavaScript for mobile menu toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const nav = document.querySelector('nav');
+
+            menuBtn.addEventListener('click', function() {
+                nav.classList.toggle('active');
+            });
+
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    nav.classList.remove('active');
+                });
+            });
+
+
+        });
+    </script>
+
+</body>
+
+</html>
